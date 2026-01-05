@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -114,6 +113,63 @@
         .light-mode .ring-inner {
             box-shadow: inset 0 1px 2px 0 rgba(0, 0, 0, 0.02);
         }
+
+        /* PRINT STYLES */
+        @media print {
+            body { 
+                background-color: white !important; 
+                color: black !important; 
+            }
+            .no-print { 
+                display: none !important; 
+            }
+            
+            /* Force white background and borders for printed elements */
+            .bg-\[\#06070a\], 
+            .bg-\[\#0d0f14\], 
+            .bg-\[\#11141b\], 
+            .bg-\[\#0b0d12\],
+            .bg-\[\#161a23\],
+            .bg-white\/5,
+            .bg-white\/\[0\.02\] { 
+                background-color: white !important; 
+                border: 1px solid #e2e8f0 !important; 
+                box-shadow: none !important;
+            }
+
+            .text-white, 
+            .text-slate-200, 
+            .text-slate-300, 
+            .text-slate-400,
+            .text-emerald-400,
+            .text-rose-400 { 
+                color: #0f172a !important; 
+            }
+
+            .text-slate-500,
+            .text-slate-600,
+            .text-slate-700 {
+                color: #475569 !important;
+            }
+
+            /* Colors for positive/negative numbers in print */
+            .text-emerald-500 { color: #059669 !important; }
+            .text-rose-500 { color: #e11d48 !important; }
+
+            /* Remove decorative elements */
+            .absolute.opacity-50, 
+            .absolute.blur-3xl,
+            .profile-glow { 
+                display: none !important; 
+            }
+
+            /* Ensure layout flows naturally */
+            .max-w-4xl { max-width: 100% !important; margin: 0 !important; }
+            .shadow-2xl, .shadow-xl { box-shadow: none !important; }
+            
+            /* Page Break handling */
+            .page-break { page-break-after: always; }
+        }
     </style>
 <script type="importmap">
 {
@@ -123,6 +179,7 @@
     "react-dom": "https://esm.sh/react-dom@^19.2.3",
     "react/": "https://esm.sh/react@^19.2.3/",
     "react": "https://esm.sh/react@^19.2.3",
+    "react-to-print": "https://esm.sh/react-to-print@3.0.2",
     "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
   }
 }
