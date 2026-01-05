@@ -1,11 +1,27 @@
-<div align="center">
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+# نظام المحاسبة الذكي (Smart Accounting System)
 
-  <h1>Built with AI Studio</h2>
+نظام محاسبي متكامل مبني باستخدام React و Tailwind CSS لإدارة العمليات المالية والمحاسبية بكفاءة عالية.
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+## المميزات الرئيسية
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+*   **لوحة التحكم (Dashboard)**: عرض مؤشرات الأداء المالي والرسوم البيانية للحسابات.
+*   **دليل الحسابات (Chart of Accounts)**: إدارة شجرة الحسابات (أصول، خصوم، حقوق ملكية، إيرادات، مصروفات) مع إمكانية الإضافة والتعديل.
+*   **سجل اليومية (Ledger)**: تسجيل القيود اليومية ومراجعتها وتصفيتها حسب التاريخ أو الحساب.
+*   **الميزانية العمومية (Balance Sheet)**: تقرير مالي يوضح المركز المالي للشركة.
+*   **إدارة الأقسام (Departments)**: هيكلة الأقسام والتخصصات ومتابعة ميزانياتها وإيراداتها.
+*   **إدارة المستخدمين (User Management)**: صلاحيات مختلفة (مدير، محاسب، مشاهد).
+*   **سلة المحذوفات (Trash Bin)**: إمكانية استعادة المعاملات المحذوفة (Soft Delete).
+*   **تحليل ذكي (AI Insights)**: استخدام Gemini API لتقديم رؤى مالية.
 
-</div>
+## التقنيات المستخدمة
+
+*   **Frontend**: React, TypeScript
+*   **Styling**: Tailwind CSS
+*   **Charts**: Recharts
+*   **Icons**: FontAwesome
+*   **State Management**: React Hooks (Context-free for simplicity in this demo)
+
+## هيكلية البيانات
+
+يعتمد النظام على هيكلية بيانات مترابطة تربط بين الحسابات والقيود والأقسام لضمان سلامة البيانات المالية وتكاملها.
