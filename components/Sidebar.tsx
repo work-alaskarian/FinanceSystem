@@ -51,30 +51,6 @@ const Sidebar: React.FC<SidebarProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const NavLink = ({ item }: { item: any }) => {
-    const isActive = currentView === item.id;
-    return (
-      <button
-        onClick={() => setView(item.id)}
-        className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-400 group relative mb-1 ${
-          isActive 
-            ? 'bg-white/5 text-emerald-400' 
-            : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.03]'
-        } ${isCollapsed ? 'justify-center px-0' : ''}`}
-      >
-        <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'group-hover:bg-white/5'}`}>
-          <i className={`fas ${item.icon} text-[13px] transition-colors ${isActive ? 'text-emerald-500' : 'text-slate-600 group-hover:text-slate-400'}`}></i>
-        </div>
-        {!isCollapsed && (
-          <span className="font-bold text-[13px] animate-fadeIn whitespace-nowrap tracking-tight">{item.label}</span>
-        )}
-        {isActive && !isCollapsed && (
-          <div className="absolute right-0 top-3 bottom-3 w-[3px] bg-emerald-500 rounded-l-full shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
-        )}
-      </button>
-    );
-  };
-
   return (
     <div 
       className={`bg-[#0b0d12] text-slate-300 h-screen flex flex-col fixed right-0 top-0 border-l border-white/[0.04] z-[1000] shadow-[10px_0_40px_rgba(0,0,0,0.5)] transition-all duration-500 ease-[cubic-bezier(0.16, 1, 0.3, 1)] ${
@@ -109,7 +85,31 @@ const Sidebar: React.FC<SidebarProps> = ({
       
       {/* Smooth Navigation - Minimalist Approach */}
       <div className="flex-1 overflow-y-auto px-4 py-8 custom-scrollbar space-y-1">
-        {navItems.map(item => <NavLink key={item.id} item={item} />)}
+        {/* Fix: Inlined NavLink logic to avoid TypeScript error with the 'key' prop on an internal sub-component */}
+        {navItems.map(item => {
+          const isActive = currentView === item.id;
+          return (
+            <button
+              key={item.id}
+              onClick={() => setView(item.id)}
+              className={`w-full flex items-center gap-3.5 px-4 py-3 rounded-2xl transition-all duration-400 group relative mb-1 ${
+                isActive 
+                  ? 'bg-white/5 text-emerald-400' 
+                  : 'text-slate-500 hover:text-slate-200 hover:bg-white/[0.03]'
+              } ${isCollapsed ? 'justify-center px-0' : ''}`}
+            >
+              <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all ${isActive ? 'bg-emerald-500/10 shadow-[0_0_15px_rgba(16,185,129,0.1)]' : 'group-hover:bg-white/5'}`}>
+                <i className={`fas ${item.icon} text-[13px] transition-colors ${isActive ? 'text-emerald-500' : 'text-slate-600 group-hover:text-slate-400'}`}></i>
+              </div>
+              {!isCollapsed && (
+                <span className="font-bold text-[13px] animate-fadeIn whitespace-nowrap tracking-tight">{item.label}</span>
+              )}
+              {isActive && !isCollapsed && (
+                <div className="absolute right-0 top-3 bottom-3 w-[3px] bg-emerald-500 rounded-l-full shadow-[0_0_8px_rgba(16,185,129,0.6)]"></div>
+              )}
+            </button>
+          );
+        })}
       </div>
 
       {/* User Profile - Simpler Integration */}

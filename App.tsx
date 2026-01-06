@@ -9,6 +9,7 @@ import JournalEntry from './components/JournalEntry';
 import TrashBin from './components/TrashBin';
 import UserManagement from './components/UserManagement';
 import Departments from './components/Departments';
+import GlobalSearchModal from './components/GlobalSearchModal';
 import { useAccountingData } from './hooks/useAccountingData';
 
 const App: React.FC = () => {
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [view, setView] = useState('dashboard');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('app-theme');
     return (saved as 'light' | 'dark') || 'dark';
@@ -49,6 +51,18 @@ const App: React.FC = () => {
     isLoaded 
   } = useAccountingData();
 
+  // Keyboard shortcut for search (Ctrl + K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchModalOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   useEffect(() => {
     if (theme === 'light') {
       document.documentElement.classList.add('light-mode');
@@ -63,6 +77,12 @@ const App: React.FC = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginUsername === 'admin') setIsAuthenticated(true);
+  };
+
+  const handleGlobalSearchResult = (targetView: string, query: string) => {
+    setView(targetView);
+    setSearchQuery(query);
+    setIsSearchModalOpen(false);
   };
 
   const renderCurrentView = () => {
@@ -177,38 +197,46 @@ const App: React.FC = () => {
       />
       
       <main className={`flex-1 min-h-screen transition-all duration-400 ease-[cubic-bezier(0.16, 1, 0.3, 1)] ${isSidebarCollapsed ? 'mr-20' : 'mr-[260px]'}`}>
-        <header className="sticky top-0 z-[100] bg-[#06070a]/80 backdrop-blur-2xl px-8 py-5 flex justify-between items-center border-b border-white/[0.04] no-print">
-          <div className="flex items-center gap-6">
-             <h2 className="text-[14px] text-white font-black flex items-center gap-3 tracking-tight">
-               <div className="w-7 h-7 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/10 shadow-inner">
+        <header className="sticky top-0 z-[100] bg-[#06070a]/40 backdrop-blur-3xl px-8 py-5 flex justify-between items-center border-b border-white/[0.04] no-print">
+          <div className="flex items-center gap-8 flex-1">
+             <h2 className="text-[14px] text-white font-black flex items-center gap-3 tracking-tight shrink-0">
+               <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center border border-emerald-500/10 shadow-inner">
                  <i className="fas fa-layer-group text-emerald-500 text-[11px]"></i>
                </div>
                {getViewTitle()}
              </h2>
              
-             <div className="relative w-64 hidden md:block">
-                <input 
-                  type="text" 
-                  placeholder="بحث سريع عن حساب أو قيد..." 
-                  className="w-full bg-[#11141b] border border-white/[0.05] rounded-xl px-4 py-2 text-[11px] outline-none text-slate-300 pr-9 focus:border-emerald-500/30 transition-all placeholder:text-slate-600 font-medium shadow-inner"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <i className="fas fa-magnifying-glass absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-600 text-[10px]"></i>
+             {/* Global Search Trigger */}
+             <div className="relative max-w-lg w-full hidden md:block">
+                <button 
+                  onClick={() => setIsSearchModalOpen(true)}
+                  className="w-full bg-white/5 border border-white/[0.03] rounded-[14px] px-10 py-2.5 text-[11px] text-slate-500 flex items-center justify-between hover:bg-white/[0.08] transition-all shadow-inner group"
+                >
+                  <div className="flex items-center gap-3">
+                    <i className="fas fa-search text-[10px] group-hover:text-emerald-500 transition-colors"></i>
+                    <span className="font-bold">البحث الشامل في النظام...</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 opacity-40">
+                    <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[9px] font-mono">Ctrl</kbd>
+                    <span className="text-[9px]">+</span>
+                    <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[9px] font-mono">K</kbd>
+                  </div>
+                </button>
              </div>
           </div>
           
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
             <button 
               onClick={() => setView('journal-entry')}
-              className="bg-emerald-500/10 text-emerald-500 px-4 h-9 rounded-xl flex items-center gap-2 hover:bg-emerald-500 hover:text-white transition-all text-[11px] font-black uppercase tracking-widest border border-emerald-500/10"
+              className="bg-emerald-600 hover:bg-emerald-500 text-white px-5 h-10 rounded-xl flex items-center gap-2.5 transition-all text-[11px] font-black uppercase tracking-widest border border-emerald-500/20 shadow-lg shadow-emerald-500/10"
             >
-               <i className="fas fa-plus text-[10px]"></i>
+               <i className="fas fa-plus-circle text-sm"></i>
                <span>إضافة قيد</span>
             </button>
-            <button className="bg-white/5 border border-white/5 rounded-xl w-9 h-9 flex items-center justify-center hover:bg-white/10 transition-all text-slate-500 hover:text-white relative">
-               <i className="fas fa-bell text-[12px]"></i>
-               <span className="absolute top-2.5 right-2.5 w-1.5 h-1.5 bg-emerald-500 rounded-full border-2 border-[#06070a]"></span>
+            <div className="w-[1px] h-6 bg-white/10 mx-1"></div>
+            <button className="bg-white/5 border border-white/5 rounded-xl w-10 h-10 flex items-center justify-center hover:bg-white/10 transition-all text-slate-500 hover:text-white relative active:scale-95">
+               <i className="fas fa-bell text-[13px]"></i>
+               <span className="absolute top-3 right-3 w-1.5 h-1.5 bg-rose-500 rounded-full border border-[#06070a]"></span>
             </button>
           </div>
         </header>
@@ -222,6 +250,16 @@ const App: React.FC = () => {
            )}
         </div>
       </main>
+
+      {/* Global Search Modal */}
+      <GlobalSearchModal 
+        isOpen={isSearchModalOpen}
+        onClose={() => setIsSearchModalOpen(false)}
+        accounts={accounts}
+        transactions={transactions}
+        departments={departments}
+        onSelect={handleGlobalSearchResult}
+      />
 
       {/* Edit Profile Modal */}
       {isProfileModalOpen && (
