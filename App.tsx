@@ -11,7 +11,7 @@ import UserManagement from './components/UserManagement';
 import Departments from './components/Departments';
 import GlobalSearchModal from './components/GlobalSearchModal';
 import { useAccountingData } from './hooks/useAccountingData';
-import { HashRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { MemoryRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 
 const AppContent: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -21,7 +21,7 @@ const AppContent: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Extract view from location.pathname (works for HashRouter as well)
+  // Extract view from location.pathname (MemoryRouter uses standard paths internally)
   const view = location.pathname.substring(1) || 'dashboard';
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -182,7 +182,7 @@ const AppContent: React.FC = () => {
               {getViewTitle()}
             </h2>
 
-            {/* Global Search Trigger (Command Palette) */}
+            {/* Global Search Trigger */}
             <div className="relative max-w-lg w-full hidden md:block">
               <button
                 onClick={() => setIsSearchModalOpen(true)}
@@ -240,7 +240,6 @@ const AppContent: React.FC = () => {
         </div>
       </main>
 
-      {/* Global Search Modal */}
       <GlobalSearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}
@@ -250,7 +249,6 @@ const AppContent: React.FC = () => {
         onSelect={handleGlobalSearchResult}
       />
 
-      {/* Edit Profile Modal */}
       {isProfileModalOpen && (
         <div className="fixed inset-0 z-[5000] flex items-center justify-center p-6 bg-black/80 backdrop-blur-xl animate-fadeIn">
           <div className="bg-[#11141b] border border-white/[0.08] w-full max-w-sm rounded-[2rem] p-10 shadow-2xl animate-slideUp">
